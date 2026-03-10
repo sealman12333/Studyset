@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Study — 1920s & Great Depression</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0d11;
+  --s1: #14141c;
+  --s2: #1c1c27;
+  --s3: #252533;
+  --border: #2e2e3e;
+  --accent: #7c6fff;
+  --accent2: #ff6b8a;
+  --green: #2ecc71;
+  --red: #e74c3c;
+  --yellow: #f1c40f;
+  --text: #eeeef8;
+  --text2: #8888aa;
+  --text3: #4a4a66;
+  --r: 14px;
+  --rs: 10px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;min-height:100vh}
+
+/* ── HEADER ── */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:18px 20px 0;gap:10px}
+.logo{font-family:'Syne',sans-serif;font-weight:800;font-size:1.05rem;background:linear-gradient(130deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;flex-shrink:0}
+.tabs{display:flex;background:var(--s1);border:1px solid var(--border);border-radius:50px;padding:3px;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font-family:'Outfit',sans-serif;font-size:0.7rem;font-weight:600;padding:5px 11px;border-radius:50px;border:none;background:transparent;color:var(--text2);cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab.on{background:var(--accent);color:#fff}
+
+/* ── DECK CHIPS ── */
+.chips{display:flex;gap:7px;padding:14px 20px 0;overflow-x:auto;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{font-size:0.68rem;font-weight:600;padding:5px 13px;border-radius:50px;border:1.5px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;white-space:nowrap;transition:all .15s;flex-shrink:0}
+.chip:hover{border-color:var(--accent);color:var(--text)}
+.chip.on{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* ── PROGRESS ── */
+.prog-wrap{padding:14px 20px 0}
+.prog-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.stats{display:flex;gap:14px}
+.stat{display:flex;align-items:center;gap:4px;font-size:0.7rem;font-weight:600;color:var(--text2)}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot.g{background:var(--green)}.dot.r{background:var(--red)}.dot.n{background:var(--border)}
+.sn{color:var(--text)}
+.ctr{font-size:0.7rem;font-weight:600;color:var(--text2)}
+.pbar{height:3px;background:var(--s2);border-radius:3px;overflow:hidden}
+.pfill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .4s ease;width:0%}
+
+/* ── FLASHCARD MODE ── */
+#fcMode{padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+
+/* The card container - fixed height, perspective parent */
+.cstage{
+  height:280px;
+  position:relative;
+  perspective:1200px;
+  cursor:pointer;
+  flex-shrink:0;
+  user-select:none;
+}
+
+/* The flipping inner */
+.cinner{
+  width:100%;height:100%;
+  position:relative;
+  transform-style:preserve-3d;
+  transition:transform .55s cubic-bezier(.25,.8,.25,1);
+}
+.cinner.flipped{transform:rotateY(180deg)}
+
+/* Both faces */
+.cface{
+  position:absolute;
+  top:0;left:0;right:0;bottom:0;
+  border-radius:var(--r);
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  display:flex;
+  flex-direction:column;
+}
+
+.cfront{
+  background:linear-gradient(150deg,#1d1d2e 0%,#15152a 100%);
+  border:1px solid #32324a;
+}
+.cback{
+  background:linear-gradient(150deg,#1a2232 0%,#131b2a 100%);
+  border:1px solid #2a3655;
+  transform:rotateY(180deg);
+}
+
+.ctop{padding:14px 16px 0;display:flex;justify-content:space-between;align-items:center}
+.ctag{font-size:0.58rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;padding:3px 9px;border-radius:50px}
+.cfront .ctag{background:rgba(124,111,255,.18);color:var(--accent)}
+.cback .ctag{background:rgba(46,204,113,.18);color:var(--green)}
+.csec{font-size:0.6rem;color:var(--text3);font-weight:500}
+
+.cbody{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px 20px;
+  overflow:hidden;
+}
+
+.cq{
+  font-family:'Syne',sans-serif;
+  font-size:clamp(.95rem,3vw,1.3rem);
+  font-weight:700;
+  color:var(--text);
+  line-height:1.4;
+  text-align:center;
+}
+
+.ca{
+  font-size:clamp(.78rem,2.2vw,.92rem);
+  color:#bcc8e0;
+  line-height:1.65;
+  text-align:left;
+  width:100%;
+  overflow-y:auto;
+  max-height:190px;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.ca::-webkit-scrollbar{width:3px}
+.ca::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.ca ul{padding-left:16px}.ca li{margin:3px 0}.ca b{color:var(--text)}
+
+.cbot{padding:10px 16px;display:flex;justify-content:center;gap:6px;flex-wrap:wrap}
+.kpill{font-size:0.58rem;color:var(--text3);display:flex;align-items:center;gap:4px}
+.k{background:var(--s2);border:1px solid var(--border);border-radius:3px;padding:1px 5px;font-size:0.58rem;color:var(--text2);font-family:monospace}
+
+/* swipe hints */
+.sind{position:absolute;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;pointer-events:none;opacity:0;transition:opacity .15s;z-index:5}
+.sind.sl{left:-5px;background:rgba(231,76,60,.25)}
+.sind.sr{right:-5px;background:rgba(46,204,113,.25)}
+
+/* Flip btn */
+.flip-btn{
+  width:100%;padding:13px;
+  border-radius:var(--rs);
+  border:1.5px solid var(--border);
+  background:var(--s1);
+  color:var(--text2);
+  font-family:'Outfit',sans-serif;
+  font-size:.85rem;font-weight:600;
+  cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.flip-btn:hover{border-color:var(--accent);color:var(--text)}
+
+/* result btns */
+.rbrow{display:flex;gap:10px}
+.rb{
+  flex:1;padding:13px;
+  border-radius:var(--rs);
+  border:1.5px solid;
+  font-family:'Outfit',sans-serif;
+  font-size:.82rem;font-weight:600;
+  cursor:pointer;transition:all .15s;
+  display:flex;align-items:center;justify-content:center;gap:6px;
+}
+.rb.mis{border-color:rgba(231,76,60,.4);color:var(--red);background:rgba(231,76,60,.06)}
+.rb.mis:hover:not(:disabled){background:rgba(231,76,60,.14);transform:scale(.98)}
+.rb.kno{border-color:rgba(46,204,113,.4);color:var(--green);background:rgba(46,204,113,.06)}
+.rb.kno:hover:not(:disabled){background:rgba(46,204,113,.14);transform:scale(.98)}
+.rb:disabled{opacity:.3;cursor:not-allowed}
+
+/* nav row */
+.navrow{display:flex;align-items:center;justify-content:center;gap:12px}
+.nbtn{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--border);background:var(--s1);color:var(--text2);font-size:.95rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+.nbtn:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+.nbtn:disabled{opacity:.22;cursor:not-allowed}
+.shufbtn{font-family:'Outfit',sans-serif;font-size:.72rem;font-weight:600;padding:9px 16px;border-radius:50px;border:1.5px solid var(--border);background:var(--s1);color:var(--text2);cursor:pointer;transition:all .15s}
+.shufbtn:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── MC / TF SHARED ── */
+#mcMode,#tfMode{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
+
+.qcard{
+  background:linear-gradient(150deg,#1d1d2e,#15152a);
+  border:1px solid #32324a;
+  border-radius:var(--r);
+  padding:24px 20px;
+  min-height:110px;
+  display:flex;flex-direction:column;justify-content:center;
+  flex-shrink:0;
+}
+.qlabel{font-size:.58rem;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:10px}
+.qtext{font-family:'Syne',sans-serif;font-size:clamp(.95rem,2.8vw,1.2rem);font-weight:700;line-height:1.4;color:var(--text)}
+
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{
+  padding:14px 18px;
+  border-radius:var(--rs);
+  border:1.5px solid var(--border);
+  background:var(--s1);
+  cursor:pointer;
+  display:flex;align-items:center;gap:12px;
+  transition:all .15s;
+  text-align:left;
+  font-family:'Outfit',sans-serif;
+  width:100%;
+}
+.opt:hover:not(.locked){border-color:var(--accent);background:rgba(124,111,255,.08)}
+.opt:active:not(.locked){transform:scale(.99)}
+.onum{
+  width:28px;height:28px;border-radius:7px;
+  background:var(--s2);border:1.5px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:700;color:var(--text2);
+  flex-shrink:0;transition:all .15s;
+}
+.otxt{font-size:.85rem;color:var(--text);line-height:1.35;font-weight:500}
+
+/* TF big buttons */
+.tf-opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.tf-opt{
+  padding:28px 16px;
+  border-radius:var(--r);
+  border:2px solid var(--border);
+  background:var(--s1);
+  cursor:pointer;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  transition:all .18s;
+  font-family:'Outfit',sans-serif;
+}
+.tf-opt:hover:not(.locked){transform:scale(1.02)}
+.tf-opt .tf-icon{font-size:1.8rem}
+.tf-opt .tf-label{font-size:.9rem;font-weight:700;color:var(--text)}
+.tf-opt.tf-true:hover:not(.locked){border-color:var(--green);background:rgba(46,204,113,.08)}
+.tf-opt.tf-false:hover:not(.locked){border-color:var(--red);background:rgba(231,76,60,.08)}
+
+/* answer states */
+.opt.correct,.tf-opt.correct{border-color:var(--green)!important;background:rgba(46,204,113,.12)!important;animation:cpulse .35s ease}
+.opt.correct .onum{background:var(--green);color:#fff;border-color:var(--green)}
+.opt.wrong,.tf-opt.wrong{border-color:var(--red)!important;background:rgba(231,76,60,.12)!important;animation:cshake .3s ease}
+.opt.wrong .onum{background:var(--red);color:#fff;border-color:var(--red)}
+.opt.showc{border-color:rgba(46,204,113,.5)!important;background:rgba(46,204,113,.06)!important}
+.opt.showc .onum{border-color:var(--green);color:var(--green)}
+.tf-opt.showc{border-color:rgba(46,204,113,.5)!important;background:rgba(46,204,113,.06)!important}
+
+@keyframes cpulse{0%{transform:scale(1)}50%{transform:scale(1.015)}100%{transform:scale(1)}}
+@keyframes cshake{0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+
+.feedback{padding:12px 16px;border-radius:var(--rs);font-size:.82rem;line-height:1.5;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:rgba(46,204,113,.1);border:1px solid rgba(46,204,113,.3);color:#7eeaa8}
+.feedback.bad{background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.3);color:#f6a0a0}
+
+.nxtbtn{
+  width:100%;padding:13px;
+  border-radius:var(--rs);border:none;
+  background:var(--accent);color:#fff;
+  font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;
+  cursor:pointer;display:none;transition:all .15s;
+}
+.nxtbtn.show{display:block}
+.nxtbtn:hover{background:#6a5fe0;transform:scale(.99)}
+
+/* ── SCORE ── */
+.score{display:none;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center;min-height:60vh}
+.score.show{display:flex}
+.scirc{width:110px;height:110px;border-radius:50%;border:3px solid var(--accent);display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:20px;background:rgba(124,111,255,.1);animation:popin .4s cubic-bezier(.23,1,.32,1)}
+@keyframes popin{from{transform:scale(.4);opacity:0}to{transform:scale(1);opacity:1}}
+.spct{font-family:'Syne',sans-serif;font-size:1.9rem;font-weight:800}
+.slbl{font-size:.62rem;color:var(--text2);font-weight:600}
+.stitle{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;margin-bottom:6px}
+.ssub{font-size:.85rem;color:var(--text2);margin-bottom:28px}
+.sbdown{display:flex;gap:28px;margin-bottom:28px}
+.sbi{text-align:center}
+.sbn{font-family:'Syne',sans-serif;font-size:1.7rem;font-weight:800}
+.sbn.g{color:var(--green)}.sbn.r{color:var(--red)}
+.sblbl{font-size:.68rem;color:var(--text2);font-weight:600}
+.rebtn{padding:13px 32px;border-radius:50px;border:none;background:linear-gradient(135deg,var(--accent),#a855f7);color:#fff;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;transition:all .15s}
+.rebtn:hover{transform:scale(1.03)}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="hdr">
+  <div class="logo">StudySet</div>
+  <div class="tabs" id="tabs">
+    <button class="tab on" onclick="setMode('fc')">Cards</button>
+    <button class="tab" onclick="setMode('mc')">Multiple Choice</button>
+    <button class="tab" onclick="setMode('tf')">True / False</button>
+  </div>
+</div>
+
+<!-- DECK CHIPS -->
+<div class="chips" id="chips"></div>
+
+<!-- PROGRESS -->
+<div class="prog-wrap">
+  <div class="prog-row">
+    <div class="stats">
+      <div class="stat"><div class="dot g"></div><span class="sn" id="sKnown">0</span> known</div>
+      <div class="stat"><div class="dot r"></div><span class="sn" id="sMissed">0</span> missed</div>
+      <div class="stat"><div class="dot n"></div><span class="sn" id="sLeft">0</span> left</div>
+    </div>
+    <div class="ctr" id="sCtr">1 / 22</div>
+  </div>
+  <div class="pbar"><div class="pfill" id="pFill"></div></div>
+</div>
+
+<!-- ══════════ FLASHCARD MODE ══════════ -->
+<div id="fcMode">
+  <!-- Card -->
+  <div class="cstage" id="cstage">
+    <div class="sind sl" id="sindL">✕</div>
+    <div class="sind sr" id="sindR">✓</div>
+    <div class="cinner" id="cinner">
+      <div class="cface cfront">
+        <div class="ctop"><span class="ctag">Question</span><span class="csec" id="fcSec"></span></div>
+        <div class="cbody"><div class="cq" id="fcQ"></div></div>
+        <div class="cbot"><span class="kpill"><span class="k">Space</span> or tap to flip</span></div>
+      </div>
+      <div class="cface cback">
+        <div class="ctop"><span class="ctag">Answer</span><span class="csec" id="fcSecB"></span></div>
+        <div class="cbody"><div class="ca" id="fcA"></div></div>
+        <div class="cbot"><span class="kpill"><span class="k">G</span> got it &nbsp;·&nbsp; <span class="k">M</span> missed</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flip button (separate from card so no bubbling) -->
+  <button class="flip-btn" id="flipBtn">↩ Flip Card</button>
+
+  <!-- Result -->
+  <div class="rbrow">
+    <button class="rb mis" id="rbMis" onclick="markCard(false)">✕ Missed</button>
+    <button class="rb kno" id="rbKno" onclick="markCard(true)">✓ Got It</button>
+  </div>
+
+  <!-- Nav -->
+  <div class="navrow">
+    <button class="nbtn" id="nbPrev" onclick="fcNav(-1)">←</button>
+    <button class="shufbtn" onclick="shuffleDeck()">⇄ Shuffle</button>
+    <button class="nbtn" id="nbNext" onclick="fcNav(1)">→</button>
+  </div>
+</div>
+
+<!-- ══════════ MULTIPLE CHOICE MODE ══════════ -->
+<div id="mcMode" class="hidden">
+  <div class="qcard">
+    <div class="qlabel" id="mcLabel">Question 1 of 22</div>
+    <div class="qtext" id="mcQ"></div>
+  </div>
+  <div class="opts" id="mcOpts"></div>
+  <div class="feedback" id="mcFb"></div>
+  <button class="nxtbtn" id="mcNxt" onclick="mcNext()">Continue →</button>
+</div>
+
+<!-- ══════════ TRUE / FALSE MODE ══════════ -->
+<div id="tfMode" class="hidden">
+  <div class="qcard">
+    <div class="qlabel" id="tfLabel">Question 1 of 22</div>
+    <div class="qtext" id="tfQ"></div>
+  </div>
+  <div class="tf-opts" id="tfOpts">
+    <button class="tf-opt tf-true" id="tfTrue" onclick="handleTF(true)">
+      <span class="tf-icon">✓</span>
+      <span class="tf-label">True</span>
+    </button>
+    <button class="tf-opt tf-false" id="tfFalse" onclick="handleTF(false)">
+      <span class="tf-icon">✗</span>
+      <span class="tf-label">False</span>
+    </button>
+  </div>
+  <div class="feedback" id="tfFb"></div>
+  <button class="nxtbtn" id="tfNxt" onclick="tfNext()">Continue →</button>
+</div>
+
+<!-- ══════════ SCORE ══════════ -->
+<div class="score" id="scoreScr">
+  <div class="scirc"><div class="spct" id="scPct">0%</div><div class="slbl">Score</div></div>
+  <div class="stitle" id="scTitle"></div>
+  <div class="ssub" id="scSub"></div>
+  <div class="sbdown">
+    <div class="sbi"><div class="sbn g" id="scC">0</div><div class="sblbl">Correct</div></div>
+    <div class="sbi"><div class="sbn r" id="scW">0</div><div class="sblbl">Wrong</div></div>
+  </div>
+  <button class="rebtn" onclick="restart()">Try Again</button>
+</div>
+
+<script>
+// ─── DATA ───
+const SECS = ['1920s Boom','Great Depression','Life / Hoover','New Deal'];
+
+const CARDS = [
+  {s:0,q:"What 3 factors led to 1920s prosperity?",
+   a:"<b>Mass production</b> (assembly line), <b>consumer culture & advertising</b>, and <b>easy credit</b> / installment plans. Produce → advertise → buy on credit → repeat."},
+  {s:0,q:"How did the automobile contribute to the 1920s boom?",
+   a:"Cars <b>created entire new industries</b>: roads, gas stations, steel, rubber, glass, motels. Ford's assembly line made them affordable for the middle class and drove suburban growth."},
+  {s:0,q:"How did credit (loans) impact the 1920s economy?",
+   a:"Credit <b>supercharged demand</b> — people bought beyond their means. This inflated production but built a <b>debt bubble</b>. When the economy slowed, defaults cascaded and spending collapsed."},
+  {s:0,q:"What is buying on the margin?",
+   a:"Paying only <b>~10% upfront</b> and borrowing the rest to buy stocks. If prices fell, investors owed the full loan immediately. The 1929 crash wiped out millions who were <b>over-leveraged</b>."},
+  {s:0,q:"Why did people buy stocks on margin?",
+   a:"The market kept rising — even a small price increase meant <b>huge profits</b> on a small investment. The downside was invisible until the crash."},
+  {s:1,q:"Name the 7 causes of the Great Depression.",
+   a:"<ul><li>Stock market speculation</li><li>Overproduction</li><li>Weak agricultural sector</li><li>Easy credit & excessive debt</li><li>Bank failures</li><li>Weak global economy</li><li>Hawley-Smoot Tariff (1930)</li></ul>"},
+  {s:1,q:"What was the Hawley-Smoot Tariff?",
+   a:"A <b>1930 law</b> raising import taxes sharply. Other countries retaliated with their own tariffs, <b>choking international trade</b> and deepening the Depression."},
+  {s:1,q:"Difference between a recession and a depression?",
+   a:"<b>Recession</b> = temporary slowdown (2+ quarters of declining GDP). <b>Depression</b> = prolonged and severe — the Great Depression lasted a decade with 25% unemployment and a 30% GDP drop."},
+  {s:1,q:"What is a bank run?",
+   a:"When many depositors <b>rush to withdraw</b> at once fearing the bank will fail. Banks only keep a fraction of deposits on hand — they can't pay everyone and collapse."},
+  {s:1,q:"How did bank runs worsen the Depression?",
+   a:"One failure triggered panic and runs on other banks. <b>Over 9,000 banks collapsed</b> in the early 1930s, wiping out savings with no FDIC protection."},
+  {s:1,q:"Why was farming already weak in the 1920s?",
+   a:"Farmers <b>overproduced during WWI</b> to feed Europe. Post-war demand dropped, prices collapsed, and farms struggled all through the '20s before the Depression hit."},
+  {s:1,q:"How did overproduction cause the Depression?",
+   a:"Factories made <b>more than consumers could buy</b>. Goods piled up → prices fell → companies cut workers → people had less money → spending dropped further. A vicious cycle."},
+  {s:2,q:"How were minorities impacted by the Great Depression?",
+   a:"Hit <b>hardest</b>. Black Americans were last hired, first fired. Hundreds of thousands of <b>Mexican Americans — including US citizens — were deported</b>. New Deal programs also frequently discriminated."},
+  {s:2,q:"What were Hoovervilles?",
+   a:"<b>Shanty towns</b> built from scrap by homeless people, sarcastically named after President Hoover to mock his handling of the Depression."},
+  {s:2,q:"What was the Bonus Army?",
+   a:"WWI veterans who marched on Washington in 1932 demanding early bonus payment. Hoover had the <b>army forcibly remove them</b> — images of soldiers attacking veterans ended his public support."},
+  {s:2,q:"Why was Prohibition repealed in 1933?",
+   a:"It had <b>completely failed</b> — bootlegging and speakeasies were everywhere. Government needed <b>tax revenue</b> during the Depression and legalization would create jobs. The 21st Amendment ended it."},
+  {s:2,q:"What was the Dust Bowl?",
+   a:"Drought + decades of over-farming <b>destroyed topsoil</b> in the Great Plains. Massive dust storms buried farms. Hundreds of thousands of families (<b>Okies</b>) migrated, mostly to California."},
+  {s:2,q:"How did the Dust Bowl worsen the Depression?",
+   a:"It wiped out an entire region's agricultural economy, created <b>mass unemployment</b> among farmers, and triggered one of the largest <b>internal migrations</b> in US history."},
+  {s:3,q:"What was Hoover's philosophy toward the Depression?",
+   a:"<b>Rugged individualism</b> — government handouts destroy self-reliance. He believed markets would self-correct and refused direct relief to citizens. He was too limited and too slow."},
+  {s:3,q:"What was FDR's New Deal?",
+   a:"A massive set of government programs: direct relief, public works, bank regulation, and market reform. FDR used <b>Fireside Chats</b> to restore confidence and communicated an active government response."},
+  {s:3,q:"What are the Three R's of the New Deal?",
+   a:"<b>Relief</b> — immediate help for the unemployed<br><b>Recovery</b> — rebuilding the economy through spending<br><b>Reform</b> — fixing banking & financial systems to prevent future collapse"},
+  {s:3,q:"How did the New Deal transform the federal government?",
+   a:"Created the <b>social safety net</b> (Social Security, unemployment insurance), established <b>financial regulation</b> (FDIC, SEC), and permanently shifted the expectation that Washington is responsible for citizens' economic welfare."},
+];
+
+// True/False statements pool
+const TF_POOL = [
+  {s:0,stmt:"The assembly line made cars more expensive during the 1920s.",ans:false,exp:"The assembly line made cars CHEAPER and more accessible to the middle class."},
+  {s:0,stmt:"Buying on margin meant paying the full stock price upfront.",ans:false,exp:"Margin meant paying only ~10% upfront and borrowing the rest."},
+  {s:0,stmt:"Easy credit helped inflate the 1920s economic bubble.",ans:true,exp:"Correct — installment plans and loans supercharged demand but created unsustainable debt."},
+  {s:0,stmt:"The automobile industry helped create many new industries like steel and rubber.",ans:true,exp:"Correct — cars drove demand for roads, gas stations, rubber, steel, glass, and more."},
+  {s:1,stmt:"The Hawley-Smoot Tariff helped end the Great Depression.",ans:false,exp:"It made things worse — other countries retaliated, killing international trade."},
+  {s:1,stmt:"A depression is more severe and longer-lasting than a recession.",ans:true,exp:"Correct — the Great Depression lasted over a decade with 25% unemployment."},
+  {s:1,stmt:"Bank runs helped stabilize the banking system during the Depression.",ans:false,exp:"Bank runs caused over 9,000 banks to collapse, wiping out savings."},
+  {s:1,stmt:"Overproduction contributed to the start of the Great Depression.",ans:true,exp:"Correct — factories produced more than consumers could buy, causing a downward spiral."},
+  {s:1,stmt:"Farmers were prosperous throughout the 1920s.",ans:false,exp:"Farmers were already struggling in the 1920s due to overproduction after WWI."},
+  {s:2,stmt:"Hoovervilles were luxury neighborhoods built during the Depression.",ans:false,exp:"Hoovervilles were shanty towns of homeless people, mocking Hoover's failed response."},
+  {s:2,stmt:"The Bonus Army was made up of WWI veterans.",ans:true,exp:"Correct — they marched to Washington demanding early payment of their promised bonuses."},
+  {s:2,stmt:"Prohibition was very successful at stopping alcohol consumption.",ans:false,exp:"Prohibition failed — bootlegging, speakeasies, and organized crime all thrived."},
+  {s:2,stmt:"The Dust Bowl was caused by drought combined with years of over-farming.",ans:true,exp:"Correct — both factors destroyed the topsoil of the Great Plains."},
+  {s:2,stmt:"Minority groups were largely protected from the worst effects of the Depression.",ans:false,exp:"Minorities were hit hardest — last hired, first fired, and often excluded from New Deal programs."},
+  {s:3,stmt:"Hoover believed in rugged individualism and opposed direct government relief.",ans:true,exp:"Correct — Hoover thought handouts would destroy self-reliance and let markets self-correct."},
+  {s:3,stmt:"FDR's New Deal created Social Security and the FDIC.",ans:true,exp:"Correct — both were major New Deal programs that still exist today."},
+  {s:3,stmt:"The Three R's of the New Deal stood for Relief, Recovery, and Reform.",ans:true,exp:"Correct — immediate help, economic rebuilding, and systemic fixes."},
+  {s:3,stmt:"The New Deal reduced the federal government's role in everyday life.",ans:false,exp:"The opposite — the New Deal permanently expanded the federal government's responsibility for citizens' welfare."},
+  {s:3,stmt:"FDR used radio Fireside Chats to communicate directly with Americans.",ans:true,exp:"Correct — he used them to restore confidence and explain his policies."},
+  {s:1,stmt:"The Great Depression was caused by a single factor: the stock market crash.",ans:false,exp:"There were 7 contributing factors including overproduction, weak banks, global economy, and tariffs."},
+];
+
+const DECKS = {
+  'All':null,
+  '1920s Boom':[0,1,2,3,4],
+  'Depression':[5,6,7,8,9,10,11],
+  'Life/Hoover':[12,13,14,15,16,17],
+  'New Deal':[18,19,20,21],
+};
+
+// ─── STATE ───
+let mode = 'fc';
+let activeDeck = 'All';
+let deck = [];        // flashcard deck
+let fcIdx = 0;
+let fcResults = {};   // idx → bool
+let fcFlipped = false;
+
+let gameDeck = [];    // mc / tf deck
+let gameIdx = 0;
+let gameCorrect = 0;
+let gameWrong = 0;
+let gameAnswered = false;
+
+let tfDeck = [];      // tf statements deck
+
+// ─── INIT ───
+function init() {
+  buildChips();
+  buildDeck('All');
+  document.getElementById('flipBtn').addEventListener('click', flipCard);
+}
+
+function buildChips() {
+  const el = document.getElementById('chips');
+  el.innerHTML = '';
+  Object.keys(DECKS).forEach(name => {
+    const b = document.createElement('button');
+    b.className = 'chip' + (name === activeDeck ? ' on' : '');
+    b.textContent = name;
+    b.onclick = () => { activeDeck = name; buildDeck(name); };
+    el.appendChild(b);
+  });
+}
+
+function buildDeck(name) {
+  activeDeck = name;
+  document.querySelectorAll('.chip').forEach(c => c.classList.toggle('on', c.textContent === name));
+  const idx = DECKS[name];
+  deck = idx ? idx.map(i => ({ ...CARDS[i], _i: i })) : CARDS.map((c, i) => ({ ...c, _i: i }));
+  fcIdx = 0; fcResults = {}; fcFlipped = false;
+
+  if (mode === 'mc') startMC();
+  else if (mode === 'tf') startTF();
+  else { renderFC(); updateStats(); }
+}
+
+// ─── MODE SWITCH ───
+function setMode(m) {
+  mode = m;
+  document.querySelectorAll('.tab').forEach((t, i) => t.classList.toggle('on', ['fc','mc','tf'][i] === m));
+  document.getElementById('fcMode').classList.toggle('hidden', m !== 'fc');
+  document.getElementById('mcMode').classList.toggle('hidden', m !== 'mc');
+  document.getElementById('tfMode').classList.toggle('hidden', m !== 'tf');
+  document.getElementById('scoreScr').classList.remove('show');
+
+  if (m === 'mc') startMC();
+  else if (m === 'tf') startTF();
+  else { fcIdx = 0; fcResults = {}; fcFlipped = false; renderFC(); updateStats(); }
+}
+
+// ─── FLASHCARD ───
+function renderFC() {
+  if (!deck.length) return;
+  const c = deck[fcIdx];
+  document.getElementById('fcQ').textContent = c.q;
+  document.getElementById('fcA').innerHTML = c.a;
+  document.getElementById('fcSec').textContent = SECS[c.s];
+  document.getElementById('fcSecB').textContent = SECS[c.s];
+  document.getElementById('sCtr').textContent = `${fcIdx + 1} / ${deck.length}`;
+  document.getElementById('cinner').classList.remove('flipped');
+  document.getElementById('flipBtn').textContent = '↩ Flip Card';
+  fcFlipped = false;
+  document.getElementById('nbPrev').disabled = fcIdx === 0;
+  document.getElementById('nbNext').disabled = fcIdx === deck.length - 1;
+  const done = fcResults[fcIdx] !== undefined;
+  document.getElementById('rbMis').disabled = done;
+  document.getElementById('rbKno').disabled = done;
+  updateStats();
+}
+
+function flipCard() {
+  fcFlipped = !fcFlipped;
+  document.getElementById('cinner').classList.toggle('flipped', fcFlipped);
+  document.getElementById('flipBtn').textContent = fcFlipped ? '↩ Flip Back' : '↩ Flip Card';
+}
+
+function fcNav(dir) {
+  fcIdx = Math.max(0, Math.min(deck.length - 1, fcIdx + dir));
+  renderFC();
+}
+
+function markCard(known) {
+  if (fcResults[fcIdx] !== undefined) return;
+  fcResults[fcIdx] = known;
+  document.getElementById('rbMis').disabled = true;
+  document.getElementById('rbKno').disabled = true;
+  updateStats();
+  if (fcIdx < deck.length - 1) setTimeout(() => fcNav(1), 320);
+}
+
+function shuffleDeck() {
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  fcIdx = 0; fcResults = {}; fcFlipped = false;
+  renderFC(); updateStats();
+}
+
+function updateStats() {
+  const vals = Object.values(fcResults);
+  const k = vals.filter(v => v).length;
+  const m = vals.filter(v => !v).length;
+  document.getElementById('sKnown').textContent = k;
+  document.getElementById('sMissed').textContent = m;
+  document.getElementById('sLeft').textContent = deck.length - vals.length;
+  document.getElementById('pFill').style.width = (deck.length > 0 ? (vals.length / deck.length) * 100 : 0) + '%';
+}
+
+// ─── MULTIPLE CHOICE ───
+function startMC() {
+  gameDeck = shuffle([...deck]);
+  gameIdx = 0; gameCorrect = 0; gameWrong = 0;
+  document.getElementById('scoreScr').classList.remove('show');
+  document.getElementById('mcMode').classList.remove('hidden');
+  renderMC();
+}
+
+function renderMC() {
+  if (gameIdx >= gameDeck.length) { showScore(); return; }
+  gameAnswered = false;
+  const card = gameDeck[gameIdx];
+  document.getElementById('mcLabel').textContent = `Question ${gameIdx + 1} of ${gameDeck.length}`;
+  document.getElementById('mcQ').textContent = card.q;
+  document.getElementById('mcFb').className = 'feedback';
+  document.getElementById('mcNxt').classList.remove('show');
+  document.getElementById('sCtr').textContent = `${gameIdx + 1} / ${gameDeck.length}`;
+  setPFill(gameIdx / gameDeck.length);
+
+  const others = gameDeck.filter((_, i) => i !== gameIdx);
+  const wrong3 = shuffle(others).slice(0, 3);
+  const options = shuffle([...wrong3, card]);
+
+  const container = document.getElementById('mcOpts');
+  container.innerHTML = '';
+  options.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'opt';
+    const txt = stripHtml(opt.a);
+    btn.innerHTML = `<span class="onum">${i + 1}</span><span class="otxt">${txt.length > 110 ? txt.slice(0, 107) + '…' : txt}</span>`;
+    btn.dataset.iscorrect = opt === card ? '1' : '0';
+    btn.onclick = () => handleMC(btn, opt === card, card);
+    container.appendChild(btn);
+  });
+
+  setGameStats();
+}
+
+function handleMC(btn, isCorrect, card) {
+  if (gameAnswered) return;
+  gameAnswered = true;
+  document.querySelectorAll('#mcOpts .opt').forEach(o => o.classList.add('locked'));
+  const fb = document.getElementById('mcFb');
+  if (isCorrect) {
+    btn.classList.add('correct'); gameCorrect++;
+    fb.textContent = '✓ Correct!'; fb.className = 'feedback ok show';
+  } else {
+    btn.classList.add('wrong'); gameWrong++;
+    document.querySelectorAll('#mcOpts .opt').forEach(o => { if (o.dataset.iscorrect === '1') o.classList.add('showc'); });
+    fb.innerHTML = `✕ Not quite. Answer: <b>${stripHtml(card.a).slice(0, 160)}</b>`;
+    fb.className = 'feedback bad show';
+  }
+  document.getElementById('mcNxt').classList.add('show');
+  setGameStats();
+}
+
+function mcNext() { gameIdx++; renderMC(); }
+
+// ─── TRUE / FALSE ───
+function startTF() {
+  // filter TF pool to match current deck's sections
+  const deckSections = new Set(deck.map(c => c.s));
+  let pool = TF_POOL.filter(t => deckSections.has(t.s));
+  if (pool.length < 5) pool = TF_POOL; // fallback to all
+  tfDeck = shuffle([...pool]);
+  gameIdx = 0; gameCorrect = 0; gameWrong = 0;
+  document.getElementById('scoreScr').classList.remove('show');
+  document.getElementById('tfMode').classList.remove('hidden');
+  renderTF();
+}
+
+function renderTF() {
+  if (gameIdx >= tfDeck.length) { showScore(); return; }
+  gameAnswered = false;
+  const item = tfDeck[gameIdx];
+  document.getElementById('tfLabel').textContent = `Statement ${gameIdx + 1} of ${tfDeck.length}`;
+  document.getElementById('tfQ').textContent = item.stmt;
+  document.getElementById('tfFb').className = 'feedback';
+  document.getElementById('tfNxt').classList.remove('show');
+  document.getElementById('sCtr').textContent = `${gameIdx + 1} / ${tfDeck.length}`;
+  setPFill(gameIdx / tfDeck.length);
+
+  // reset button states
+  const tBtn = document.getElementById('tfTrue');
+  const fBtn = document.getElementById('tfFalse');
+  tBtn.className = 'tf-opt tf-true';
+  fBtn.className = 'tf-opt tf-false';
+
+  setGameStats();
+}
+
+function handleTF(userSaysTrue) {
+  if (gameAnswered) return;
+  gameAnswered = true;
+  const item = tfDeck[gameIdx];
+  const isCorrect = userSaysTrue === item.ans;
+  const tBtn = document.getElementById('tfTrue');
+  const fBtn = document.getElementById('tfFalse');
+  tBtn.classList.add('locked'); fBtn.classList.add('locked');
+
+  const chosen = userSaysTrue ? tBtn : fBtn;
+  const correct = item.ans ? tBtn : fBtn;
+
+  const fb = document.getElementById('tfFb');
+  if (isCorrect) {
+    chosen.classList.add('correct'); gameCorrect++;
+    fb.textContent = '✓ Correct! ' + item.exp; fb.className = 'feedback ok show';
+  } else {
+    chosen.classList.add('wrong'); gameWrong++;
+    correct.classList.add('showc');
+    fb.innerHTML = `✕ That's <b>${item.ans ? 'True' : 'False'}</b>. ${item.exp}`;
+    fb.className = 'feedback bad show';
+  }
+  document.getElementById('tfNxt').classList.add('show');
+  setGameStats();
+}
+
+function tfNext() { gameIdx++; renderTF(); }
+
+// ─── SCORE ───
+function showScore() {
+  ['mcMode','tfMode','fcMode'].forEach(id => document.getElementById(id).classList.add('hidden'));
+  const scr = document.getElementById('scoreScr'); scr.classList.add('show');
+  const total = (mode === 'mc' ? gameDeck : tfDeck).length;
+  const pct = total > 0 ? Math.round((gameCorrect / total) * 100) : 0;
+  document.getElementById('scPct').textContent = pct + '%';
+  document.getElementById('scC').textContent = gameCorrect;
+  document.getElementById('scW').textContent = gameWrong;
+  const [title, sub] = pct === 100 ? ['Perfect!','You nailed every one.'] : pct >= 80 ? ['Great work!',"Almost test-ready."] : pct >= 60 ? ['Getting there!','Review the misses and retry.'] : ['Keep studying!',"Run it again — you'll get it."];
+  document.getElementById('scTitle').textContent = title;
+  document.getElementById('scSub').textContent = sub;
+  setPFill(1);
+}
+
+function restart() {
+  document.getElementById('scoreScr').classList.remove('show');
+  if (mode === 'mc') { document.getElementById('mcMode').classList.remove('hidden'); startMC(); }
+  else if (mode === 'tf') { document.getElementById('tfMode').classList.remove('hidden'); startTF(); }
+  else { document.getElementById('fcMode').classList.remove('hidden'); fcIdx = 0; fcResults = {}; fcFlipped = false; renderFC(); updateStats(); }
+}
+
+// ─── HELPERS ───
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+function stripHtml(h) { const d = document.createElement('div'); d.innerHTML = h; return d.textContent || d.innerText || ''; }
+function setPFill(ratio) { document.getElementById('pFill').style.width = (ratio * 100) + '%'; }
+function setGameStats() {
+  const total = mode === 'tf' ? tfDeck.length : gameDeck.length;
+  document.getElementById('sKnown').textContent = gameCorrect;
+  document.getElementById('sMissed').textContent = gameWrong;
+  document.getElementById('sLeft').textContent = total - gameIdx;
+}
+
+// ─── KEYBOARD ───
+document.addEventListener('keydown', e => {
+  if (document.getElementById('scoreScr').classList.contains('show')) return;
+  if (mode === 'fc') {
+    if (e.key === 'ArrowLeft') fcNav(-1);
+    else if (e.key === 'ArrowRight') fcNav(1);
+    else if (e.key === ' ') { e.preventDefault(); flipCard(); }
+    else if (e.key === 'g' || e.key === 'G') markCard(true);
+    else if (e.key === 'm' || e.key === 'M') markCard(false);
+  } else if (mode === 'mc') {
+    const n = parseInt(e.key);
+    if (n >= 1 && n <= 4 && !gameAnswered) {
+      const opts = document.querySelectorAll('#mcOpts .opt');
+      if (opts[n - 1]) opts[n - 1].click();
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && gameAnswered) { e.preventDefault(); mcNext(); }
+  } else if (mode === 'tf') {
+    if (!gameAnswered) {
+      if (e.key === '1' || e.key === 't' || e.key === 'T') handleTF(true);
+      else if (e.key === '2' || e.key === 'f' || e.key === 'F') handleTF(false);
+    }
+    if ((e.key === 'Enter' || e.key === ' ') && gameAnswered) { e.preventDefault(); tfNext(); }
+  }
+});
+
+// ─── TOUCH SWIPE (flashcards only) ───
+let tx = 0, ty = 0;
+const stg = document.getElementById('cstage');
+stg.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive: true });
+stg.addEventListener('touchmove', e => {
+  const dx = e.touches[0].clientX - tx, dy = e.touches[0].clientY - ty;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 15) {
+    e.preventDefault();
+    document.getElementById('sindL').style.opacity = dx < 0 ? Math.min(1, Math.abs(dx) / 70) : 0;
+    document.getElementById('sindR').style.opacity = dx > 0 ? Math.min(1, dx / 70) : 0;
+  }
+}, { passive: false });
+stg.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+  document.getElementById('sindL').style.opacity = 0;
+  document.getElementById('sindR').style.opacity = 0;
+  if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 50) {
+    if (fcFlipped) { dx < 0 ? markCard(false) : markCard(true); }
+  }
+}, { passive: true });
+
+init();
+</script>
+</body>
+</html>
